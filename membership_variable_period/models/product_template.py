@@ -4,12 +4,13 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 from odoo import api, fields, models, _
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
 
 MEMBERSHIP_TYPE = [('fixed', 'Fixed dates'), ('variable', 'Variable periods')]
-INTERVAL_UNIT = [('days', 'days'), ('weeks', 'weeks'), 
+INTERVAL_UNIT = [('days', 'days'), ('weeks', 'weeks'),
                  ('months', 'months'), ('years', 'years')]
+
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
@@ -17,10 +18,10 @@ class ProductTemplate(models.Model):
     membership_type = fields.Selection(selection=MEMBERSHIP_TYPE,
                                        string="Membership type",
                                        default='fixed', required=True)
-    membership_interval_qty = fields.Integer(string="Interval quantity", 
+    membership_interval_qty = fields.Integer(string="Interval quantity",
                                              default=1)
     membership_interval_unit = fields.Selection(selection=INTERVAL_UNIT,
-                                                string="Interval unit", 
+                                                string="Interval unit",
                                                 default='years')
 
     @api.model
@@ -55,11 +56,11 @@ class ProductTemplate(models.Model):
             return date + relativedelta(months=self.membership_interval_qty)
         elif self.membership_interval_unit == 'years':
             return date + relativedelta(years=self.membership_interval_qty)
-        else: return date
+        else:
+            return date
 
     @api.multi
     def _correct_vals_membership_type(self, vals):
         if vals.get('membership_type') == 'variable':
             return {'membership_date_from': False, 'membership_date_to': False}
         return {}
-
